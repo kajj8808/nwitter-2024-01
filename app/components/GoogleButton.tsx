@@ -1,13 +1,16 @@
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faGoogle } from "@fortawesome/free-brands-svg-icons";
-import {
-  GoogleAuthProvider,
-  signInWithPopup,
-  signInWithRedirect,
-} from "firebase/auth";
+import { GoogleAuthProvider, signInWithRedirect } from "firebase/auth";
 import { auth } from "@lib/client/firebase";
+import { cls } from "@lib/client/utile";
 
-function GoogleButton() {
+function GoogleButton({
+  text,
+  fullSize,
+}: {
+  text: string;
+  fullSize?: boolean;
+}) {
   const onClick = async () => {
     try {
       const provider = new GoogleAuthProvider();
@@ -18,9 +21,15 @@ function GoogleButton() {
     }
   };
   return (
-    <div className="flex w-72 items-center justify-center gap-2 rounded-lg py-4 text-sm font-bold shadow-md">
-      <FontAwesomeIcon onClick={onClick} icon={faGoogle} size="xl" />
-      <span>구글 회원가입</span>
+    <div
+      onClick={onClick}
+      className={cls(
+        "flex cursor-pointer items-center justify-center gap-2 rounded-lg py-4 text-sm font-bold shadow-md",
+        fullSize ? "w-full" : "w-72",
+      )}
+    >
+      <FontAwesomeIcon icon={faGoogle} size="xl" />
+      <span>구글 {text}</span>
     </div>
   );
 }

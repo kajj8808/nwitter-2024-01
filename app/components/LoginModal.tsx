@@ -7,8 +7,14 @@ import { useState } from "react";
 import SignTextInput from "./SignTextInput";
 import ModalCloseButton from "./ModalCloseButton";
 import { auth } from "@lib/client/firebase";
-import { createUserWithEmailAndPassword, updateProfile } from "firebase/auth";
-import { FirestoreError } from "firebase/firestore";
+import {
+  createUserWithEmailAndPassword,
+  signInWithEmailAndPassword,
+  updateProfile,
+} from "firebase/auth";
+import BorderLineOr from "./BorderLineOr";
+import GithubButton from "./GitButton";
+import GoogleButton from "./GoogleButton";
 import { FirebaseError } from "firebase/app";
 
 interface IForm {
@@ -16,7 +22,7 @@ interface IForm {
   password: string;
 }
 
-function EmailSignModal({
+function LoginModal({
   isOpen,
   closeModal,
 }: {
@@ -30,20 +36,14 @@ function EmailSignModal({
 
   const onValid = async ({ email, password }: IForm) => {
     try {
+      console.log(email, password);
       setIsLoading(true);
-      const credentials = await createUserWithEmailAndPassword(
-        auth,
-        email,
-        password,
-      );
-      await updateProfile(credentials.user, {
-        displayName: `anon_${new Date().getTime()}`,
-      });
+      await signInWithEmailAndPassword(auth, email, password);
       router.push("/");
     } catch (error: unknown) {
       if (error instanceof FirebaseError) {
-        if (error.message.includes("(auth/email-already-in-use)")) {
-          setFirebaseError("이미 존재하는 이메일 주소입니다.");
+        if (error.message.includes("(auth/invalid-credential)")) {
+          setFirebaseError("존재하지 않는 이메일 주소입니다.");
         }
       }
       setIsLoading(false);
@@ -57,18 +57,18 @@ function EmailSignModal({
           onSubmit={handleSubmit(onValid)}
           className="absolute left-0 top-0 flex h-screen w-full items-center justify-center"
         >
-          <div className="relative z-30 flex h-full w-full flex-col justify-between overflow-auto bg-white px-16 pb-5 pt-20 md:h-auto md:max-h-[90vh] md:w-auto md:rounded-2xl">
-            <div className="flex flex-col gap-5">
-              <h1 className="mb-3 text-3xl font-bold">계정 만들기</h1>
-              <SignTextInput register={register("email")} />
-              <SignTextInput register={register("password")} />
-            </div>
+          <div className="relative z-30 flex h-full w-full flex-col gap-5 overflow-auto bg-white px-16 pb-5 pt-20 md:h-auto md:max-h-[90vh] md:w-auto md:rounded-2xl">
+            <h1 className="mb-3 text-3xl font-bold">로그인</h1>
+            <GithubButton fullSize text="로그인" />
+            <GoogleButton fullSize text="로그인" />
+            <BorderLineOr />
+            <SignTextInput register={register("email")} />
+            <SignTextInput register={register("password")} />
             <SubmitButton
-              text="가입"
+              text="로그인"
               error={firebaseError}
               isLoading={isLoading}
             />
-
             <ModalCloseButton onClick={closeModal} />
           </div>
           <div
@@ -81,4 +81,4 @@ function EmailSignModal({
   );
 }
 
-export default EmailSignModal;
+export default LoginModal;

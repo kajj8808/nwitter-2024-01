@@ -2,14 +2,10 @@
 
 import { useEffect, useState } from "react";
 import { auth } from "@lib/client/firebase";
-import GithubButton from "@components/GitButton";
-import GoogleButton from "@components/GoogleButton";
-import EmailSignButton from "@components/EmailSignButton";
-import EmailSignModal from "@components/EmailSignModal";
+import SignComponents from "@components/SignComponents";
+import LoginComponents from "@components/LoginComponents";
 
 export default function LoginPage() {
-  const [isModalOpen, setIsModalOpen] = useState(false);
-
   const init = async () => {
     await auth.authStateReady();
   };
@@ -18,22 +14,10 @@ export default function LoginPage() {
     init();
   });
 
-  const openModal = () => {
-    setIsModalOpen(true);
-  };
-
-  const closeModal = () => {
-    setIsModalOpen(false);
-  };
-
   return (
-    <>
-      <div>
-        <EmailSignButton onClick={openModal} />
-        <GithubButton />
-        <GoogleButton />
-        <EmailSignModal isOpen={isModalOpen} closeModal={closeModal} />
-      </div>
-    </>
+    <div className="flex h-screen w-full flex-col items-center justify-center">
+      <SignComponents />
+      <LoginComponents />
+    </div>
   );
 }
