@@ -1,6 +1,10 @@
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faGoogle } from "@fortawesome/free-brands-svg-icons";
-import { GoogleAuthProvider, signInWithRedirect } from "firebase/auth";
+import {
+  GoogleAuthProvider,
+  signInWithPopup,
+  signInWithRedirect,
+} from "firebase/auth";
 import { auth } from "@lib/client/firebase";
 import { cls } from "@lib/client/utile";
 
@@ -14,8 +18,9 @@ function GoogleButton({
   const onClick = async () => {
     try {
       const provider = new GoogleAuthProvider();
-      //await signInWithPopup(auth, provider);
-      await signInWithRedirect(auth, provider);
+      const data = await signInWithPopup(auth, provider);
+      console.log(data);
+      //await signInWithRedirect(auth, provider);
     } catch (error) {
       console.error(error);
     }

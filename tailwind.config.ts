@@ -9,7 +9,11 @@ const config: Config = {
   theme: {
     extend: {
       colors: {
-        primary: "#6CBEE0",
+        primary: "#3ea6ff",
+        background: "#0f0f0f",
+        fontColor: "#f1f1f1",
+        borderColor: "#717171",
+        blurColor: "#717171",
       },
     },
   },
